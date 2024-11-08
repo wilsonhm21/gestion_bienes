@@ -1,0 +1,128 @@
+1. Tabla Principal de Personal
+La tabla Personal se centrará en los datos principales del empleado, dejando los detalles como la formación académica, contactos, y otros aspectos en tablas separadas. Aquí se almacenarán los campos básicos del empleado y las relaciones clave con otras tablas.
+
+sql
+Copiar código
+CREATE TABLE Personal (
+    id_personal INT AUTO_INCREMENT PRIMARY KEY,           -- Identificador único
+    apellidos_nombres VARCHAR(255) NOT NULL,              -- APELLIDOS Y NOMBRES
+    cargo VARCHAR(100),                                   -- CARGO
+    id_jefe_inmediato INT,                                -- JEFE INMEDIATO (referencia a otra persona en la tabla de Personal)
+    id_zona INT,                                          -- Zona (relación con la tabla Zonas)
+    id_sede INT,                                          -- Sede (relación con la tabla Sedes)
+    id_local INT,                                         -- Local (relación con la tabla Locales)
+    fecha_ingreso DATE,                                   -- FECHA DE INGRESO
+    fecha_reingreso DATE,                                 -- REINGRESO
+    fecha_ultimo_cambio DATE,                             -- ULTIMO CAMBIO
+    fecha_cese DATE,                                      -- FECHA DE CESE
+    tipo_contrato VARCHAR(50),                            -- TIPO DE CONTRATO
+    modalidad_contrato VARCHAR(50),                       -- MODALIDAD DE CONTRATO
+    reg_lab VARCHAR(50),                                  -- REG. LABORAL
+    sistema VARCHAR(50),                                  -- SISTEMA (por ejemplo, software que usa)
+    grupo_ocupacional VARCHAR(100),                       -- GRUPO OCUPACIONAL
+    FOREIGN KEY (id_jefe_inmediato) REFERENCES Personal(id_personal),   -- Relación con jefe inmediato
+    FOREIGN KEY (id_zona) REFERENCES Zonas(id_zona),               -- Relación con tabla Zonas
+    FOREIGN KEY (id_sede) REFERENCES Sedes(id_sede),               -- Relación con tabla Sedes
+    FOREIGN KEY (id_local) REFERENCES Locales(id_local)            -- Relación con tabla Locales
+);
+Nota:
+
+Los campos como direccion_trabajo, email_institucional, dni, sexo, etc., los moveremos a otras tablas específicas.
+El id_jefe_inmediato es una clave foránea que hace referencia a otro registro de la misma tabla Personal (es decir, un jefe inmediato también es un trabajador).
+2. Tabla de Contactos
+Aquí almacenamos los números de teléfono, direcciones y correos electrónicos del trabajador.
+
+sql
+Copiar código
+CREATE TABLE Contactos (
+    id_contacto INT AUTO_INCREMENT PRIMARY KEY,           -- Identificador único de contacto
+    id_personal INT,                                      -- Relación con la tabla Personal
+    celular_personal VARCHAR(20),                         -- CELULAR PERSONAL SEGÚN FICHA DEL TRABAJADOR
+    otro_celular VARCHAR(20),                             -- OTRO CELULAR
+    direccion_domicilio VARCHAR(255),                     -- DIRECCION DOMICILIARIA REAL
+    ciudad_domicilio VARCHAR(100),                        -- CIUDAD DOMICILIARIA
+    direccion_trabajo_domicilio VARCHAR(255),             -- DIRECCION DOMICILIARIA POR TRABAJO
+    ciudad_trabajo_domicilio VARCHAR(100),                -- CIUDAD DOMICILIARIA POR TRABAJO
+    email_institucional VARCHAR(100),                     -- CORREO ELECTRONICO INSTITUCIONAL
+    email_personal VARCHAR(100),                          -- CORREO ELECTRONICO PERSONAL
+    dni VARCHAR(20),                                      -- D.N.I.
+    FOREIGN KEY (id_personal) REFERENCES Personal(id_personal)
+);
+3. Tabla de Formacion_Academica
+En esta tabla registramos la formación académica del trabajador, incluyendo su profesión, colegiatura, maestría, doctorado, etc.
+
+sql
+Copiar código
+CREATE TABLE Formacion_Academica (
+    id_formacion INT AUTO_INCREMENT PRIMARY KEY,          -- Identificador único de formación académica
+    id_personal INT,                                      -- Relación con la tabla Personal
+    profesion VARCHAR(100),                                -- PROFESIÓN
+    colegiatura VARCHAR(100),                              -- COLEGIATURA
+    maestria VARCHAR(100),                                 -- MESTRÍA
+    doctorado VARCHAR(100),                                -- DOCTORADO
+    universidad VARCHAR(255),                              -- UNIVERSIDAD
+    codigo_profesional VARCHAR(50),                        -- CÓDIGO PROFESIONAL
+    fecha_colegiatura DATE,                                -- FECHA DE COLEGIATURA
+    FOREIGN KEY (id_personal) REFERENCES Personal(id_personal)
+);
+4. Tabla de Familia
+En esta tabla almacenamos información sobre los familiares del trabajador, como los hijos o los padres.
+
+sql
+Copiar código
+CREATE TABLE Familia (
+    id_familia INT AUTO_INCREMENT PRIMARY KEY,            -- Identificador único
+    id_personal INT,                                      -- Relación con la tabla Personal
+    nombre_padre VARCHAR(255),                             -- NOMBRE DEL PADRE
+    nombre_madre VARCHAR(255),                             -- NOMBRE DE LA MADRE
+    numero_hijos INT,                                     -- N° DE HIJOS
+    cantidad_hijos_menores INT,                           -- N° HIJOS MENORES
+    FOREIGN KEY (id_personal) REFERENCES Personal(id_personal)
+);
+5. Tabla de Ubigeo
+Esta tabla almacena la ubicación geográfica del trabajador, como el departamento, provincia y distrito.
+
+sql
+Copiar código
+CREATE TABLE Ubigeo (
+    id_ubigeo INT AUTO_INCREMENT PRIMARY KEY,             -- Identificador único de ubicación geográfica
+    departamento VARCHAR(100),                            -- DEPARTAMENTO
+    provincia VARCHAR(100),                               -- PROVINCIA
+    distrito VARCHAR(100)                                 -- DISTRITO
+);
+6. Tabla de Tipo_Contrato
+Registra el tipo de contrato del trabajador (por ejemplo: contrato indefinido, contrato temporal).
+
+sql
+Copiar código
+CREATE TABLE Tipo_Contrato (
+    id_tipo_contrato INT AUTO_INCREMENT PRIMARY KEY,       -- Identificador único
+    descripcion VARCHAR(100)                               -- Descripción del tipo de contrato
+);
+7. Tabla de Zona
+Contiene la información de las zonas en las que los empleados están asignados.
+
+sql
+Copiar código
+CREATE TABLE Zonas (
+    id_zona INT AUTO_INCREMENT PRIMARY KEY,               -- Identificador único de zona
+    nombre_zona VARCHAR(100) NOT NULL                      -- Nombre de la zona
+);
+8. Tabla de Sedes
+Contiene la información de las sedes o ubicaciones generales donde los empleados trabajan.
+
+sql
+Copiar código
+CREATE TABLE Sedes (
+    id_sede INT AUTO_INCREMENT PRIMARY KEY,               -- Identificador único de sede
+    nombre_sede VARCHAR(100) NOT NULL                      -- Nombre de la sede
+);
+9. Tabla de Locales
+Contiene la información sobre los locales específicos dentro de las sedes.
+
+sql
+Copiar código
+CREATE TABLE Locales (
+    id_local INT AUTO_INCREMENT PRIMARY KEY,              -- Identificador único de local
+    nombre_local VARCHAR(100) NOT NULL                     -- Nombre del local
+);
